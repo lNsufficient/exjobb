@@ -34,7 +34,8 @@ y = (Matrix(:,2));
 MolCaPerMolCaM = @(KD, Ca)(Ca.*(4*Ca.^3 + 3*KD(4)*Ca.^2 + 2*KD(3)*KD(4)*Ca...
     + KD(2)*KD(3)*KD(4)))./(Ca.^4 + KD(4)*Ca.^3 + KD(3)*KD(4)*Ca.^2 +...
     KD(2)*KD(3)*KD(4)*Ca + KD(1)*KD(2)*KD(3)*KD(4));
-    x = gaussnewton(MolCaPerMolCaM,t,y,[4646, 1124, 22959, 15836]',1e-6,0,1,1)
-    f = @(alpha) sum((MolCaPerMolCaM(alpha,t) - y).^2);
-    f(x)-f([4646, 1124, 22959, 15836]')
+
+x = gaussnewton(MolCaPerMolCaM,t,y,[4646, 1124, 22959, 15836]',1e-6,0,1,1)
+f = @(alpha) sum((MolCaPerMolCaM(alpha,t) - y).^2);
+f(x)-f([4646, 1124, 22959, 15836]')
   

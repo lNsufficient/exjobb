@@ -25,6 +25,14 @@ Matrix=[0.0     0.0
 t = 10.^(Matrix(:,1))';
 y = (Matrix(:,2))';
 
+
+MolCaMPerMolPP2B = @(KD5, totalCaM) (-(totalCaM.*(KD5 - totalPP2B + totalCaM - (KD5.^2 ...
+    + 2*KD5.*totalPP2B + 2*KD5.*totalCaM + totalPP2B^2 ...
+    - 2*totalPP2B.*totalCaM + totalCaM.^2).^(1/2)))./(totalPP2B.*(KD5 ...
+    + totalPP2B - totalCaM + (KD5.^2 + 2*KD5.*totalPP2B + 2*KD5.*totalCaM ...
+    + totalPP2B^2 - 2*totalPP2B*totalCaM + totalCaM.^2).^(1/2))));
+
+
 % beta = @(MolCamPerMolPP2B, totalCam) (MolCamPerMolPP2B*totalPP2B -totalCam)./(totalCam-totalPP2B);
 % KD5 = @(beta, totalCam) totalCam./beta - totalPP2B./(1+beta);
 % kd5 = KD5(beta(y, t), t);
@@ -39,11 +47,6 @@ kd5 = sort(kd5);
 startmu = median(kd5);
 
 
-MolCaMPerMolPP2B = @(KD5, totalCaM) (-(totalCaM.*(KD5 - totalPP2B + totalCaM - (KD5.^2 ...
-    + 2*KD5.*totalPP2B + 2*KD5.*totalCaM + totalPP2B^2 ...
-    - 2*totalPP2B.*totalCaM + totalCaM.^2).^(1/2)))./(totalPP2B.*(KD5 ...
-    + totalPP2B - totalCaM + (KD5.^2 + 2*KD5.*totalPP2B + 2*KD5.*totalCaM ...
-    + totalPP2B^2 - 2*totalPP2B*totalCaM + totalCaM.^2).^(1/2))));
 
 f = @(x, mu, y) MolCaMPerMolPP2B(mu,x) - y;
 f_res = @(mu) f(t, mu, y);
