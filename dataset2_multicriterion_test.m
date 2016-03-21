@@ -25,6 +25,20 @@ Matrix=[0.0     0.0
 t = 10.^(Matrix(:,1))';
 y = (Matrix(:,2))';
 
+% beta = @(MolCamPerMolPP2B, totalCam) (MolCamPerMolPP2B*totalPP2B -totalCam)./(totalCam-totalPP2B);
+% KD5 = @(beta, totalCam) totalCam./beta - totalPP2B./(1+beta);
+% kd5 = KD5(beta(y, t), t);
+% 
+% KD5 = @(MolCamPerMolPP2B, beta) totalPP2B*MolCamPerMolPP2B./(beta.*(1+beta));
+% kd5_2 = KD5(y, beta(y, t));
+
+
+KD5 = @(totalCam, MolCamPerMolPP2B) (totalCam - MolCamPerMolPP2B.*totalPP2B).*(1-MolCamPerMolPP2B)./MolCamPerMolPP2B;
+kd5 = KD5(t, y);
+kd5 = sort(kd5);
+startmu = median(kd5);
+
+
 MolCaMPerMolPP2B = @(KD5, totalCaM) (-(totalCaM.*(KD5 - totalPP2B + totalCaM - (KD5.^2 ...
     + 2*KD5.*totalPP2B + 2*KD5.*totalCaM + totalPP2B^2 ...
     - 2*totalPP2B.*totalCaM + totalCaM.^2).^(1/2)))./(totalPP2B.*(KD5 ...
@@ -32,6 +46,13 @@ MolCaMPerMolPP2B = @(KD5, totalCaM) (-(totalCaM.*(KD5 - totalPP2B + totalCaM - (
     + totalPP2B^2 - 2*totalPP2B*totalCaM + totalCaM.^2).^(1/2))));
 
 f = @(x, mu, y) MolCaMPerMolPP2B(mu,x) - y;
+f_res = @(mu) f(t, mu, y);
+lb = kd5(1);
+ub = kd5(end);
+[x,resnorm,residual]  = lsqnonlin(f_res, startmu, lb, ub)
+startmu = 26370
+[x,resnorm,residual]  = lsqnonlin(f_res, startmu)
+
 
 %Genom att ändra i1 och i2 styr man vilka som plottas
 i1 = 5;
@@ -105,3 +126,5 @@ n2 = i_max_right
 disp('Det optimala värdet på mu styrs främst av dessa, förutsatt att vi vill minimera det största felet')
 disp('Det optimala värdet på mu blir då')
 optMu
+
+

@@ -35,4 +35,12 @@ if sign < 0
     disp('improvment')
 end
 
+beta = @(MolCamPerMolPP2B, totalCam) (MolCamPerMolPP2B*totalPP2B -totalCam)./(totalCam-totalPP2B);
+%KD5 = @(beta, totalCam) totalCam./beta - totalPP2B./(1+beta);
+KD5 = @(MolCamPerMolPP2B, beta) totalPP2B*MolCamPerMolPP2B./(beta.*(1+beta));
+
+kd5 = KD5(beta(y, t), y);
+
+f = @(x, mu, y) MolCaMPerMolPP2B(mu,x) - y;
+resnorm = (f(t,x, y));
 %26370
